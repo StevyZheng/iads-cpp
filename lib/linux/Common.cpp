@@ -4,7 +4,7 @@
 
 #include "Common.h"
 #include <fstream>
-#include <iostream>
+
 
 int Common::write(string file_path, string str, bool append) {
     ofstream fs;
@@ -78,5 +78,9 @@ vector<string> Common::split_string(string src_str, string reg_str) {
         ret.emplace_back(*i++);
     }
     return ret;
+}
+
+string Common::read_trim(string file_path, int &return_code) {
+    return Common::trim(Common::read(file_path, return_code));
 }
 

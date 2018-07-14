@@ -18,6 +18,7 @@ struct Common {
 
     static int write(string file_path, string str, bool append=true);
     static string read(string file_path, int& return_code);
+    static string read_trim(string file_path, int& return_code);
     static string trim(string src_str);
     static vector<string> split_lines(string src_str);
     static vector<string> split_string(string src_str, string reg_str="\\s+");
