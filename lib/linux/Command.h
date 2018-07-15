@@ -5,13 +5,7 @@
 #ifndef IADS_COMMAND_H
 #define IADS_COMMAND_H
 
-#include "boost/algorithm/string.hpp"
-#include "boost/format.hpp"
-#include <string>
-#include <vector>
-#include "../Exception.h"
-#include "../ThreadPool.h"
-using namespace std;
+#include "../stevy.h"
 
 class Command {
 public:

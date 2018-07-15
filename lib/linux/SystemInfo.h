@@ -5,15 +5,17 @@
 #ifndef IADS_COMMONHW_H
 #define IADS_COMMONHW_H
 
-#include <string>
 #include "Command.h"
 #include "Common.h"
-using namespace std;
 
 struct SystemInfo {
     SystemInfo() = default;
     void init();
+    string to_json();
 
+    string ry_sn;
+    string sm_sn;
+    string server_model;
     string cpu_model;
     int cpu_count;
     string cpu_stepping;

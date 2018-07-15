@@ -84,3 +84,17 @@ string Common::read_trim(string file_path, int &return_code) {
     return Common::trim(Common::read(file_path, return_code));
 }
 
+bool Common::exeist_file(string file_path) {
+    struct stat file_stat;
+    return (stat(file_path.c_str(), &file_stat) == 0);
+}
+
+bool Common::exeist_files(vector<string> file_paths) {
+    struct stat file_stat;
+    for(auto &f: file_paths){
+        if(0 != stat(f.c_str(), &file_stat))
+            return false;
+    }
+    return true;
+}
+
