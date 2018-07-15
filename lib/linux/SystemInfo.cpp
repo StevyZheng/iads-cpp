@@ -4,6 +4,15 @@
 
 #include "SystemInfo.h"
 
+
+
+SystemInfo::SystemInfo() {
+    this->ry_sn = this->sm_sn = this->server_model = this->cpu_model = "";
+    this->cpu_count = this->cpu_socket_count = this->mem_count = this->mem_channel_count = 0;
+    this->cpu_stepping = this->mem_model = this->bios_vender = this->bios_ver = "";
+    this->bios_date = this->bmc_ver = this->bmc_date = this->os_ver = this->kernel_ver = "";
+}
+
 void SystemInfo::init() {
     //check tools env,like ipmitool dmidecode.
     string sys_path = std::getenv("PATH");
@@ -45,3 +54,4 @@ string SystemInfo::to_json() {
     root.prettyPrintTo(json_str);
     return json_str;
 }
+

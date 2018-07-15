@@ -10,7 +10,7 @@ find_package(Boost 1.66.0 COMPONENTS log thread system regex REQUIRED)
 
 SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
 
-set(SOURCE_FILES main.cpp lib/linux/Command.cpp lib/linux/Command.h lib/ThreadPool.h lib/Exception.h lib/linux/Common.cpp lib/linux/Common.h lib/linux/SystemInfo.cpp lib/linux/SystemInfo.h lib/stevy.h)
+set(SOURCE_FILES main.cpp lib/linux/Command.cpp lib/linux/Command.h lib/ThreadPool.h lib/Exception.h lib/linux/Common.cpp lib/linux/Common.h lib/linux/SystemInfo.cpp lib/linux/SystemInfo.h lib/stevy.h lib/linux/Storage.cpp lib/linux/Storage.h lib/TextTable.h lib/TextTable.cpp lib/TablePrinter.h)
 add_executable(iads ${SOURCE_FILES})
 
 TARGET_LINK_LIBRARIES(iads ${Boost_LIBRARIES})
