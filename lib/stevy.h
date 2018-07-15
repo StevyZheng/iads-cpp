@@ -9,8 +9,6 @@
 #include <string>
 #include "boost/regex.hpp"
 #include "boost/algorithm/string.hpp"
-#include "boost/property_tree/ptree.hpp"
-#include "boost/property_tree/json_parser.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/format.hpp"
 #include <streambuf>
@@ -20,9 +18,7 @@
 #include <cstdlib>
 #include "Exception.h"
 #include "ThreadPool.h"
+#include "ArduinoJson/ArduinoJson.h"
 using namespace std;
-
-typedef boost::property_tree::ptree sptree;
-typedef boost::property_tree::ptree::iterator siterator;
 
 #endif //IADS_STEVY_H

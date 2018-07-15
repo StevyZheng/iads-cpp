@@ -4,6 +4,6 @@ using namespace std;
 
 int main() {
     SystemInfo si;
-    si.init();
+    cout << si.to_json() << endl;
     return 0;
 }

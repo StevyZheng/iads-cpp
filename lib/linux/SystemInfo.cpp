@@ -14,14 +14,34 @@ void SystemInfo::init() {
         string dmidecode_path = c + "/dmidecode";
         if(!Common::exeist_file(ipmitool_path) || !Common::exeist_file(dmidecode_path)){
             cout << "ipmitool or dmidecode is not exeist." << endl;
-            return;
+            //return;
         }
     }
+
 }
 
 string SystemInfo::to_json() {
     string json_str;
-    sptree root;
-    sptree item;
+    StaticJsonBuffer<2048> jsonBuffer;
+    JsonObject& root = jsonBuffer.createObject();
+    JsonObject& nextRoot = root.createNestedObject("systeminfo");
+    nextRoot["ry_sn"] = this->ry_sn;
+    nextRoot["sm_sn"] = this->sm_sn;
+    nextRoot["server_model"] = this->server_model;
+    nextRoot["cpu_model"] = this->cpu_model;
+    nextRoot["cpu_count"] = this->cpu_count;
+    nextRoot["cpu_stepping"] = this->cpu_stepping;
+    nextRoot["cpu_socket_count"] = this->cpu_socket_count;
+    nextRoot["mem_model"] = this->mem_model;
+    nextRoot["mem_count"] = this->mem_count;
+    nextRoot["mem_channel_count"] = this->mem_channel_count;
+    nextRoot["bios_vender"] = this->bios_vender;
+    nextRoot["bios_ver"] = this->bios_ver;
+    nextRoot["bios_date"] = this->bios_date;
+    nextRoot["bmc_ver"] = this->bmc_ver;
+    nextRoot["bmc_date"] = this->bmc_date;
+    nextRoot["os_ver"] = this->os_ver;
+    nextRoot["kernel_ver"] = this->kernel_ver;
+    root.prettyPrintTo(json_str);
     return json_str;
 }
