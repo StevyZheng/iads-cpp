@@ -18,3 +18,10 @@ void SystemInfo::init() {
         }
     }
 }
+
+string SystemInfo::to_json() {
+    string json_str;
+    sptree root;
+    sptree item;
+    return json_str;
+}

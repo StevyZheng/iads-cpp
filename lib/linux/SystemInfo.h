@@ -9,7 +9,12 @@
 #include "Common.h"
 
 struct SystemInfo {
-    SystemInfo() = default;
+    SystemInfo(){
+        this->ry_sn = this->sm_sn = this->server_model = this->cpu_model = "";
+        this->cpu_count = this->mem_count = this->mem_channel_count = 0;
+        this->cpu_stepping = this->mem_model = this->bios_vender = this->bios_ver = "";
+        this->bios_date = this->bmc_ver = this->bmc_date = this->os_ver = this->kernel_ver = "";
+    };
     void init();
     string to_json();
 

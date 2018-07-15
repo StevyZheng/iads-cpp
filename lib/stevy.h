@@ -22,4 +22,7 @@
 #include "ThreadPool.h"
 using namespace std;
 
+typedef boost::property_tree::ptree sptree;
+typedef boost::property_tree::ptree::iterator siterator;
+
 #endif //IADS_STEVY_H
