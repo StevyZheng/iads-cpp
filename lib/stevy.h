@@ -19,7 +19,7 @@
 #include "Exception.h"
 #include "ThreadPool.h"
 #include "ArduinoJson/ArduinoJson.h"
-#include "TextTable.h"
+#include "ConsoleTable.h"
 using namespace std;
 
 #endif //IADS_STEVY_H
