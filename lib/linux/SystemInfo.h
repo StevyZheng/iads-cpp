@@ -11,6 +11,7 @@
 struct SystemInfo {
     SystemInfo();
     void init();
+    string to_string();
     string to_json();
 
     string ry_sn;

@@ -6,7 +6,7 @@ set(BOOST_ROOT "/usr/include/boost")
 INCLUDE_DIRECTORIES(/usr/include/boost)
 set(Boost_USE_STATIC_LIBS ON)
 # link_directories(/usr/lib)
-find_package(Boost 1.66.0 COMPONENTS log thread system regex REQUIRED)
+find_package(Boost 1.66.0 COMPONENTS log thread system program_options regex REQUIRED)
 
 SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
 

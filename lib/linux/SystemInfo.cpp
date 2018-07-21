@@ -55,3 +55,17 @@ string SystemInfo::to_json() {
     return json_str;
 }
 
+string SystemInfo::to_string() {
+    stringstream retstream;
+    string ret;
+    retstream << "ry_sn:" << this->ry_sn << endl << "sm_sn:" << this->sm_sn << endl << "server_model:" \
+        << this->server_model << endl << "cpu_model:" << this->cpu_model << endl << "cpu_count:" << this->cpu_count << endl\
+        << "cpu_stepping:" << this->cpu_stepping << endl << "cpu_socket_count:" << this->cpu_socket_count << endl\
+        << "mem_model:" << this->mem_model << endl << "mem_count:" << this->mem_count << endl << "mem_channel_count:"\
+        << this->mem_channel_count << endl << "bios_ver:" << this->bios_ver << endl << "bios_vender:" << this->bios_vender\
+        << endl << "bios_date:" << this->bios_date << endl << "bmc_ver:" << this->bmc_ver << endl << "bmc_date:" << this->bmc_date\
+        << endl << "os_ver:" << this->os_ver << endl << "kernel_ver:" << this->kernel_ver << endl;
+    ret = retstream.str();
+    return ret;
+}
+

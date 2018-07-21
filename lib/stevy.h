@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <iostream>
+#include <stdexcept>
 #include <cstdlib>
 #include "Exception.h"
 #include "ThreadPool.h"

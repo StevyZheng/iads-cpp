@@ -6,6 +6,7 @@
 #define IADS_COMMON_H
 
 #include "../stevy.h"
+#include <ctime>
 
 struct Common {
     static vector<string> regex_rows(string src_str, string reg_str);
@@ -19,6 +20,18 @@ struct Common {
     static string trim(string src_str);
     static vector<string> split_lines(string src_str);
     static vector<string> split_string(string src_str, string reg_str="\\s+");
+};
+
+class Net{
+private:
+    string conf_path;
+    vector<string> ports;
+};
+
+class IoDemo{
+public:
+    static void create_multi_dirs(string file_path, int multi_num);
+    static void create_multi_files(string file_path, int multi_num, long file_size);
 };
 
 

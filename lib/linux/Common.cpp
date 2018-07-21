@@ -98,3 +98,22 @@ bool Common::exeist_files(vector<string> file_paths) {
     return true;
 }
 
+
+
+void IoDemo::create_multi_dirs(string file_path, int multi_num) {
+    ThreadPool tp(static_cast<size_t>(multi_num));
+    for (int i = 0; i < multi_num; i++) {
+        stringstream file_name;
+        file_name << file_path + "/" << i;
+        string file_name_str = file_name.str();
+        try {
+            tp.enqueue([file_name_str] {
+                int status = mkdir(file_name_str.c_str(), S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
+                if (status)
+                    throw runtime_error("create dir failed!");
+            });
+        }catch(exception& e){
+            cout << e.what() << endl;
+        }
+    }
+}

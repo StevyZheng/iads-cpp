@@ -5,22 +5,30 @@
 #ifndef IADS_CMDLINEPARSER_H
 #define IADS_CMDLINEPARSER_H
 
-#include "stevy.h"
+#include "linux/SystemInfo.h"
+using namespace boost::program_options;
 
 class CmdlineParser {
 public:
     CmdlineParser(){
-        this->pOpts = new boost::program_options::options_description("iads options");
-        this->pVm = new boost::program_options::variables_map();
+        this->pOpts = new options_description("iads options");
+        this->pVm = new variables_map();
+        this->pOpts->add_options()
+                ("help,h", "iads help info.")
+                ("sysinfo", value<string>()->implicit_value("str"),"system info, add param: str or json.")
+                ("mkdir", value<vector<string>>()->multitoken(), "multi create dirs, param: path count.");
     }
     ~CmdlineParser(){
         delete this->pOpts;
         delete this->pVm;
     }
 
+    void parse(int argc, char* argv[]);
+    void doing();
+
 private:
-    boost::program_options::options_description* pOpts;
-    boost::program_options::variables_map* pVm;
+    options_description* pOpts;
+    variables_map* pVm;
 };
 
 
