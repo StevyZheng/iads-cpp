@@ -69,3 +69,11 @@ string SystemInfo::to_string() {
     return ret;
 }
 
+long SystemInfo::get_sys_mem_size() {
+    int tmp;
+    string ret_shell = Command::shell_exec("cat /proc/meminfo|grep MemFree", tmp);
+    vector<string> ret_v = Common::split_string(ret_shell, ":");
+    long ret = 1024 * atoi(ret_v[1].c_str());
+    return ret;
+}
+

@@ -13,6 +13,7 @@ struct SystemInfo {
     void init();
     string to_string();
     string to_json();
+    static long get_sys_mem_size();
 
     string ry_sn;
     string sm_sn;

@@ -5,8 +5,9 @@ using namespace std;
 
 
 int main(int argc, char* argv[]) {
-    CmdlineParser parser;
+    /*CmdlineParser parser;
     parser.parse(argc, argv);
-    parser.doing();
+    parser.doing();*/
+    cout <<  SystemInfo::get_sys_mem_size() << endl;
     return 0;
 }

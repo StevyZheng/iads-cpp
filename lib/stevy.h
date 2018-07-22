@@ -22,5 +22,6 @@
 #include "ArduinoJson/ArduinoJson.h"
 #include "ConsoleTable.h"
 using namespace std;
+#define MAX_THREAD_NUM 1024
 
 #endif //IADS_STEVY_H
