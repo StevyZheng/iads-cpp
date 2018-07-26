@@ -10,7 +10,7 @@
 
 struct Common {
     static vector<string> regex_rows(string src_str, string reg_str);
-    static vector<string> regex_rows_column(string src_str, string reg_str, int column);
+    static vector<string> regex_rows_column(string src_str, string reg_str, int column, string reg_split="\\s+");
 
     static bool exeist_file(string file_path);
     static bool exeist_files(vector<string> file_paths);

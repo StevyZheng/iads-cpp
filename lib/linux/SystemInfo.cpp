@@ -69,11 +69,43 @@ string SystemInfo::to_string() {
     return ret;
 }
 
-long SystemInfo::get_sys_mem_size() {
+long long SystemInfo::get_avail_mem_size() {
     int tmp;
     string ret_shell = Command::shell_exec("cat /proc/meminfo|grep MemFree", tmp);
-    vector<string> ret_v = Common::split_string(ret_shell, ":");
-    long ret = 1024 * atoi(ret_v[1].c_str());
-    return ret;
+    vector<string> ret_v = Common::split_string(ret_shell);
+    stringstream buf;
+    buf << ret_v[1];
+    long long ret;
+    buf >> ret;
+    return ret *= 1024;
+}
+
+string SystemInfo::get_info() {
+    int recode;
+    string cpu_info = Command::shell_exec("lscpu", recode);
+    string dmi_info = Command::shell_exec("dmidecode", recode);
+    string fru_info = Command::shell_exec("./ipmicfg -fru PS", recode);
+    string os_info = Command::shell_exec("lsb_release -d", recode);
+    string kernel_info = Command::shell_exec("uname -r", recode);
+    this->kernel_ver = kernel_info;
+    this->os_ver = Common::trim(Common::split_string(os_info, ":").at(1));
+    this->cpu_model = Common::trim(Common::regex_rows_column(cpu_info, ".*Model name.+", 1, ":").at(0));
+    this->cpu_stepping = Common::trim(Common::regex_rows_column(cpu_info, ".*Stepping.+", 1, ":").at(0));
+    try {
+        stringstream t_str;
+        t_str << Common::regex_rows_column(cpu_info, ".*Socket.+", 1)[0];
+        t_str >> this->cpu_socket_count;
+        t_str.clear();
+    }catch(Exception e){
+        cout << "" << endl;
+    }
+    /*int tpc, cps, cs;
+    t_str << Common::regex_rows_column(cpu_info, ".*Thread(s) per core.+", 1).at(0);
+    t_str >> tpc;
+    t_str.clear();
+    t_str << Common::regex_rows_column(cpu_info, ".*Core(s) per socket.+", 1).at(0);
+    t_str >> cps;
+    this->cpu_count = get_nprocs() / (tpc * cps);*/
+    return std::string();
 }
 

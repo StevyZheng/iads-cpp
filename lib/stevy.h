@@ -14,6 +14,7 @@
 #include <streambuf>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "sys/sysinfo.h"
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>

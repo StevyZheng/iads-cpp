@@ -54,13 +54,13 @@ vector<string> Common::regex_rows(string src_str, string reg_str) {
     return ret;
 }
 
-vector<string> Common::regex_rows_column(string src_str, string reg_str, int column) {
+vector<string> Common::regex_rows_column(string src_str, string reg_str, int column, string reg_split) {
     vector<string> ret;
     boost::regex reg(reg_str);
     boost::sregex_iterator pos(src_str.begin(), src_str.end(), reg, boost::match_not_dot_newline);
     boost::sregex_iterator end;
     while(pos != end){
-        vector<string> buf = Common::split_string((*pos)[0]);
+        vector<string> buf = Common::split_string((*pos)[0], reg_split);
         if(column >= 0 && column < buf.size())
             ret.emplace_back(buf[column]);
         else
