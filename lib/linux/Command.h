@@ -23,7 +23,7 @@ public:
     string get_result();
     void exec();
 
-    static string shell_exec(string cmd, int& return_code);
+    static string shell_exec(string cmd, int& return_code, bool if_trim= true);
 private:
     string cmd;
     string name;

@@ -3,8 +3,9 @@
 //
 
 #include "Command.h"
+#include "Common.h"
 
-string Command::shell_exec(string cmd, int& return_code) {
+string Command::shell_exec(string cmd, int& return_code, bool if_trim) {
     int count = 2048;
     char* buffer = new char[count];
     string ret;
@@ -17,6 +18,8 @@ string Command::shell_exec(string cmd, int& return_code) {
         return_code = -1;
     delete[](buffer);
     return_code = 1;
+    if(if_trim)
+        ret = Common::trim(ret);
     return ret;
 }
 

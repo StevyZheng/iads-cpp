@@ -10,7 +10,7 @@
 
 struct Common {
     static vector<string> regex_rows(string src_str, string reg_str);
-    static vector<string> regex_rows_column(string src_str, string reg_str, int column, string reg_split="\\s+");
+    static vector<string> regex_rows_column(string src_str, string reg_str, int column, string reg_split="\\s+", bool if_trim= true);
 
     static bool exeist_file(string file_path);
     static bool exeist_files(vector<string> file_paths);
@@ -19,7 +19,9 @@ struct Common {
     static string read_trim(string file_path, int& return_code);
     static string trim(string src_str);
     static vector<string> split_lines(string src_str);
-    static vector<string> split_string(string src_str, string reg_str="\\s+");
+    static vector<string> split_string(string src_str, string reg_str="\\s+", bool if_trim= true);
+    static void stringstream_clear(stringstream& stringstream_buf);
+    static string get_current_dir();
 };
 
 class Net{

@@ -54,13 +54,17 @@ vector<string> Common::regex_rows(string src_str, string reg_str) {
     return ret;
 }
 
-vector<string> Common::regex_rows_column(string src_str, string reg_str, int column, string reg_split) {
+vector<string> Common::regex_rows_column(string src_str, string reg_str, int column, string reg_split, bool if_trim) {
     vector<string> ret;
     boost::regex reg(reg_str);
     boost::sregex_iterator pos(src_str.begin(), src_str.end(), reg, boost::match_not_dot_newline);
     boost::sregex_iterator end;
     while(pos != end){
-        vector<string> buf = Common::split_string((*pos)[0], reg_split);
+        vector<string> buf;
+        if(if_trim)
+            buf = Common::split_string((*pos)[0], reg_split);
+        else
+            buf = Common::split_string((*pos)[0], reg_split, false);
         if(column >= 0 && column < buf.size())
             ret.emplace_back(buf[column]);
         else
@@ -70,13 +74,17 @@ vector<string> Common::regex_rows_column(string src_str, string reg_str, int col
     return ret;
 }
 
-vector<string> Common::split_string(string src_str, string reg_str) {
+vector<string> Common::split_string(string src_str, string reg_str, bool if_trim) {
     vector<string> ret;
     boost::regex re(reg_str);
     boost::sregex_token_iterator i(src_str.begin(), src_str.end(), re, -1);
     boost::sregex_token_iterator j;
     while(i != j){
-        ret.emplace_back(*i++);
+        if(if_trim)
+            ret.emplace_back(Common::trim(*i));
+        else
+            ret.emplace_back(*i);
+        i++;
     }
     return ret;
 }
@@ -99,6 +107,29 @@ bool Common::exeist_files(vector<string> file_paths) {
     return true;
 }
 
+void Common::stringstream_clear(stringstream &stringstream_buf) {
+    stringstream_buf.str("");
+    if(stringstream_buf.eof())
+        stringstream_buf.clear();
+}
+
+string Common::get_current_dir() {
+    string now_dir;
+    char s_now_dir[1024] = {0};
+    int cnt = static_cast<int>(readlink("/proc/self/exe", s_now_dir, 1024));
+    if(cnt < 0 || cnt >=1024) {
+        throw runtime_error("get_current_dir: readlink error.");
+        exit;
+    }
+    for(int i=cnt; i>=0; --i){
+        if(s_now_dir[i] == '/'){
+            s_now_dir[i+1] = '\0';
+            break;
+        }
+    }
+    now_dir = s_now_dir;
+    return now_dir;
+}
 
 
 void IoDemo::create_multi_dirs(string file_path, int multi_num) {

@@ -24,36 +24,47 @@ void SystemInfo::init() {
     for(auto c: split_path){
         string ipmitool_path = c + "/ipmitool";
         string dmidecode_path = c + "/dmidecode";
-        if(!Common::exeist_file(ipmitool_path) || !Common::exeist_file(dmidecode_path)){
-            cout << "ipmitool or dmidecode is not exeist." << endl;
-            //return;
-        }
+        if(!Common::exeist_file(ipmitool_path))
+            this->ipmicfg_exeist = false;
+        if(!Common::exeist_file(dmidecode_path))
+            this->dmi_exeist = false;
     }
+    if(!this->ipmicfg_exeist)
+        cout << "ipmitool is not exeist." << endl;
+    if(!this->dmi_exeist)
+        cout << "dmidecode is not exeist." << endl;
 
 }
 
-string SystemInfo::to_json() {
+string SystemInfo::to_json(Json_all_str all_str) {
     string json_str;
     StaticJsonBuffer<2048> jsonBuffer;
     JsonObject& root = jsonBuffer.createObject();
     JsonObject& nextRoot = root.createNestedObject("systeminfo");
-    nextRoot["ry_sn"] = this->ry_sn;
-    nextRoot["sm_sn"] = this->sm_sn;
-    nextRoot["server_model"] = this->server_model;
-    nextRoot["cpu_model"] = this->cpu_model;
-    nextRoot["cpu_count"] = this->cpu_count;
-    nextRoot["cpu_stepping"] = this->cpu_stepping;
-    nextRoot["cpu_socket_count"] = this->cpu_socket_count;
-    nextRoot["mem_model"] = this->mem_model;
-    nextRoot["mem_count"] = this->mem_count;
-    nextRoot["mem_channel_count"] = this->mem_channel_count;
-    nextRoot["bios_vender"] = this->bios_vender;
-    nextRoot["bios_ver"] = this->bios_ver;
-    nextRoot["bios_date"] = this->bios_date;
-    nextRoot["bmc_ver"] = this->bmc_ver;
-    nextRoot["bmc_date"] = this->bmc_date;
-    nextRoot["os_ver"] = this->os_ver;
-    nextRoot["kernel_ver"] = this->kernel_ver;
+    if(JSON_ALL_STR == all_str) {
+        vector<string> ret_vect = this->get_attr_value();
+        for (int i = 0; i < this->attr_vector.size(); i++) {
+            nextRoot[this->attr_vector[i]] = ret_vect[i];
+        }
+    }else if(JSON_ORIGINAL == all_str) {
+        nextRoot["ry_sn"] = this->ry_sn;
+        nextRoot["sm_sn"] = this->sm_sn;
+        nextRoot["server_model"] = this->server_model;
+        nextRoot["cpu_model"] = this->cpu_model;
+        nextRoot["cpu_count"] = this->cpu_count;
+        nextRoot["cpu_stepping"] = this->cpu_stepping;
+        nextRoot["cpu_socket_count"] = this->cpu_socket_count;
+        nextRoot["mem_model"] = this->mem_model;
+        nextRoot["mem_count"] = this->mem_count;
+        nextRoot["mem_channel_count"] = this->mem_channel_count;
+        nextRoot["bios_vender"] = this->bios_vender;
+        nextRoot["bios_ver"] = this->bios_ver;
+        nextRoot["bios_date"] = this->bios_date;
+        nextRoot["bmc_ver"] = this->bmc_ver;
+        nextRoot["bmc_date"] = this->bmc_date;
+        nextRoot["os_ver"] = this->os_ver;
+        nextRoot["kernel_ver"] = this->kernel_ver;
+    }
     root.prettyPrintTo(json_str);
     return json_str;
 }
@@ -82,22 +93,52 @@ long long SystemInfo::get_avail_mem_size() {
 }
 
 string SystemInfo::get_info() {
+    string now_dir = Common::get_current_dir();
+    string ipmicfg_path = now_dir + "ipmicfg";
     int recode;
-    string cpu_info = Common::trim(Command::shell_exec("lscpu", recode));
-    string dmi_info = Common::trim(Command::shell_exec("dmidecode", recode));
-    string fru_info = Common::trim(Command::shell_exec("./ipmicfg -fru PS", recode));
-    string os_info = Common::trim(Command::shell_exec("lsb_release -d", recode));
-    string kernel_info = Common::trim(Command::shell_exec("uname -r", recode));
-    this->kernel_ver = kernel_info;
-    this->os_ver = Common::trim(Common::split_string(os_info, ":").at(1));
-    this->cpu_model = Common::trim(Common::regex_rows_column(cpu_info, ".*Model name.+", 1, ":").at(0));
-    this->cpu_stepping = Common::trim(Common::regex_rows_column(cpu_info, ".*Stepping.+", 1, ":").at(0));
+    string dmi_info, fru_info, bmc_summary;
+    string cpu_info = Command::shell_exec("lscpu", recode);
+    dmi_info = Command::shell_exec("dmidecode 2>> /dev/null", recode);
+    fru_info = Command::shell_exec(ipmicfg_path + " -fru list", recode);
+    bmc_summary = Command::shell_exec(ipmicfg_path + " -summary", recode);
+    string os_info = Command::shell_exec("lsb_release -d", recode);
+    this->kernel_ver = Command::shell_exec("uname -r", recode);
     try {
+        this->os_ver = Common::split_string(os_info, ":").at(1);
+        if(!cpu_info.empty()) {
+            this->cpu_model = Common::regex_rows_column(cpu_info, ".*Model name.+", 1, ":").at(0);
+            this->cpu_stepping = Common::regex_rows_column(cpu_info, ".*Stepping.+", 1, ":").at(0);
+        }
+        if(!dmi_info.empty()) {
+            this->bios_vender = Common::regex_rows_column(dmi_info, ".*Vendor.+", 1, ":").at(0);
+            this->bios_ver = Common::regex_rows_column(dmi_info, ".*Version.+", 1, ":").at(0);
+            this->bios_date = Common::regex_rows_column(dmi_info, ".*Release Date.+", 1, ":").at(0);
+            this->server_model = Common::regex_rows_column(dmi_info, ".*Product Name.+", 1, ":").at(0);
+        }
+        if(!bmc_summary.empty()) {
+            this->bmc_ver = Common::regex_rows_column(bmc_summary, ".*Firmware Revision.+", 1, ":").at(0);
+            this->bmc_date = Common::regex_rows_column(bmc_summary, ".*Build Time.+", 1, ":").at(0);
+        }
+
+        vector<string> t_mem_model = Common::regex_rows_column(dmi_info, ".*Part Number.+", 1, ":");
+        if(!t_mem_model.empty()) {
+            this->mem_model = t_mem_model.at(1);
+            string tmp;
+            tmp = ".*" + this->mem_model + ".+";
+            vector<string> t_mem_count = Common::regex_rows(dmi_info, tmp);
+            this->mem_count = static_cast<int>(t_mem_count.size());
+        }
         stringstream t_str;
         t_str << Common::regex_rows_column(cpu_info, ".*Socket.+", 1)[0];
         t_str >> this->cpu_socket_count;
-        t_str.clear();
-    }catch(Exception e){
+        Common::stringstream_clear(t_str);
+        vector<string> t_mem_channel_count = Common::regex_rows_column(dmi_info, ".*Number Of Devices.+", 1, ":");
+        if(!t_mem_channel_count.empty()) {
+            t_str << t_mem_channel_count.at(0);
+            t_str >> this->mem_channel_count;
+            Common::stringstream_clear(t_str);
+        }
+    } catch(Exception e){
         cout << "" << endl;
     }
     /*int tpc, cps, cs;

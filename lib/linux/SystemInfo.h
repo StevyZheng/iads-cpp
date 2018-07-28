@@ -9,11 +9,16 @@
 #include "Common.h"
 #include "../ConsoleTable.h"
 
+enum Json_all_str{
+    JSON_ORIGINAL,
+    JSON_ALL_STR
+};
+
 struct SystemInfo {
     SystemInfo();
     void init();
     string to_string();
-    string to_json();
+    string to_json(Json_all_str all_str= Json_all_str::JSON_ORIGINAL);
     string to_table();
     static long long get_avail_mem_size();
     string get_info();
@@ -38,6 +43,8 @@ struct SystemInfo {
     string kernel_ver;
 
     vector<string> attr_vector;
+    bool ipmicfg_exeist;
+    bool dmi_exeist;
 };
 
 

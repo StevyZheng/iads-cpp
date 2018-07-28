@@ -10,6 +10,7 @@ int main(int argc, char* argv[]) {
     parser.doing();*/
     SystemInfo si;
     si.get_info();
-    cout << si.to_table();
+    cout << si.to_json();
+
     return 0;
 }
