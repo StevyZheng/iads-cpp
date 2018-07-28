@@ -11,6 +11,9 @@ SystemInfo::SystemInfo() {
     this->cpu_count = this->cpu_socket_count = this->mem_count = this->mem_channel_count = 0;
     this->cpu_stepping = this->mem_model = this->bios_vender = this->bios_ver = "";
     this->bios_date = this->bmc_ver = this->bmc_date = this->os_ver = this->kernel_ver = "";
+    this->attr_vector = {"ry_sn", "sm_sn", "server_model", "cpu_model", "cpu_count", "cpu_stepping",\
+        "cpu_socket_count", "mem_model", "mem_count", "mem_channel_count", "bios_vender", "bios_ver",\
+         "bios_date", "bmc_ver", "bmc_date", "os_ver", "kernel_ver"};
 }
 
 void SystemInfo::init() {
@@ -57,7 +60,6 @@ string SystemInfo::to_json() {
 
 string SystemInfo::to_string() {
     stringstream retstream;
-    string ret;
     retstream << "ry_sn:" << this->ry_sn << endl << "sm_sn:" << this->sm_sn << endl << "server_model:" \
         << this->server_model << endl << "cpu_model:" << this->cpu_model << endl << "cpu_count:" << this->cpu_count << endl\
         << "cpu_stepping:" << this->cpu_stepping << endl << "cpu_socket_count:" << this->cpu_socket_count << endl\
@@ -65,8 +67,7 @@ string SystemInfo::to_string() {
         << this->mem_channel_count << endl << "bios_ver:" << this->bios_ver << endl << "bios_vender:" << this->bios_vender\
         << endl << "bios_date:" << this->bios_date << endl << "bmc_ver:" << this->bmc_ver << endl << "bmc_date:" << this->bmc_date\
         << endl << "os_ver:" << this->os_ver << endl << "kernel_ver:" << this->kernel_ver << endl;
-    ret = retstream.str();
-    return ret;
+    return retstream.str();
 }
 
 long long SystemInfo::get_avail_mem_size() {
@@ -82,11 +83,11 @@ long long SystemInfo::get_avail_mem_size() {
 
 string SystemInfo::get_info() {
     int recode;
-    string cpu_info = Command::shell_exec("lscpu", recode);
-    string dmi_info = Command::shell_exec("dmidecode", recode);
-    string fru_info = Command::shell_exec("./ipmicfg -fru PS", recode);
-    string os_info = Command::shell_exec("lsb_release -d", recode);
-    string kernel_info = Command::shell_exec("uname -r", recode);
+    string cpu_info = Common::trim(Command::shell_exec("lscpu", recode));
+    string dmi_info = Common::trim(Command::shell_exec("dmidecode", recode));
+    string fru_info = Common::trim(Command::shell_exec("./ipmicfg -fru PS", recode));
+    string os_info = Common::trim(Command::shell_exec("lsb_release -d", recode));
+    string kernel_info = Common::trim(Command::shell_exec("uname -r", recode));
     this->kernel_ver = kernel_info;
     this->os_ver = Common::trim(Common::split_string(os_info, ":").at(1));
     this->cpu_model = Common::trim(Common::regex_rows_column(cpu_info, ".*Model name.+", 1, ":").at(0));
@@ -107,5 +108,47 @@ string SystemInfo::get_info() {
     t_str >> cps;
     this->cpu_count = get_nprocs() / (tpc * cps);*/
     return std::string();
+}
+
+vector<string> SystemInfo::get_attr_value() {
+    vector<string> ret;
+    stringstream tmp_cpu_count, tmp_cpu_socket_count, tmp_mem_count, tmp_mem_channel_count;
+    tmp_cpu_count << this->cpu_count;
+    string t_cpu_count, t_cpu_socket_count, t_mem_count, t_mem_channel_count;
+    tmp_cpu_socket_count << this->cpu_socket_count;
+    tmp_mem_count << this->mem_count;
+    tmp_mem_channel_count << this->mem_channel_count;
+
+    ret.emplace_back(this->ry_sn);
+    ret.emplace_back(this->sm_sn);
+    ret.emplace_back(this->server_model);
+    ret.emplace_back(this->cpu_model);
+    ret.emplace_back(tmp_cpu_count.str());
+    ret.emplace_back(this->cpu_stepping);
+    ret.emplace_back(tmp_cpu_socket_count.str());
+    ret.emplace_back(this->mem_model);
+    ret.emplace_back(tmp_mem_count.str());
+    ret.emplace_back(tmp_mem_channel_count.str());
+    ret.emplace_back(this->bios_vender);
+    ret.emplace_back(this->bios_ver);
+    ret.emplace_back(this->bios_date);
+    ret.emplace_back(this->bmc_ver);
+    ret.emplace_back(this->bmc_date);
+    ret.emplace_back(this->os_ver);
+    ret.emplace_back(this->kernel_ver);
+    return ret;
+}
+
+string SystemInfo::to_table() {
+    ConsoleTable sysinfo_table(2);
+    auto *buf = new ostringstream;
+    Row header = {"**Attribute**", "**Value**"};
+    sysinfo_table.AddNewRow(header);
+    vector<string> attr_value = this->get_attr_value();
+    for(int i=0; i < this->attr_vector.size(); i++){
+        sysinfo_table.AddNewRow({this->attr_vector[i], attr_value[i]});
+    }
+    sysinfo_table.WriteTable(Align::Center, buf);
+    return buf->str();
 }
 

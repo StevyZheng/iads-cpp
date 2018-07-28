@@ -7,14 +7,17 @@
 
 #include "Command.h"
 #include "Common.h"
+#include "../ConsoleTable.h"
 
 struct SystemInfo {
     SystemInfo();
     void init();
     string to_string();
     string to_json();
+    string to_table();
     static long long get_avail_mem_size();
     string get_info();
+    vector<string> get_attr_value();
 
     string ry_sn;
     string sm_sn;
@@ -33,6 +36,8 @@ struct SystemInfo {
     string bmc_date;
     string os_ver;
     string kernel_ver;
+
+    vector<string> attr_vector;
 };
 
 
