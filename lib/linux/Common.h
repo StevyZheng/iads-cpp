@@ -77,6 +77,8 @@ struct Common {
     static string read(string file_path, int& return_code);
     static string read_trim(string file_path, int& return_code);
     static string get_current_dir();
+    static vector<string> list_dirs(const string &path, bool if_full_path= false, bool if_child= false);
+    static vector<string> list_files(string path, bool if_full_path= false, bool if_child= false);
 
     static map<string, DataType> parse_cpu_info();
 };

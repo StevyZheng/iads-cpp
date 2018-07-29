@@ -199,13 +199,66 @@ Common::regex_rows_column_uniq(string src_str, string reg_str, int column, strin
     return tmp;
 }
 
+vector<string> Common::list_dirs(const string &path, bool if_full_path, bool if_child) {
+    vector<string> ret;
+    namespace fs = boost::filesystem;
+    if(if_child){
+        fs::recursive_directory_iterator end;
+        for(fs::recursive_directory_iterator pos(path); pos != end; ++pos){
+            if(fs::is_directory(*pos)){
+                if(if_full_path)
+                    ret.emplace_back(pos->path().generic_string());
+                else
+                    ret.emplace_back(pos->path().filename().string());
+            }
+        }
+    }else {
+        fs::directory_iterator end;
+        for (fs::directory_iterator pos(path); pos != end; ++pos) {
+            if (fs::is_directory(*pos)) {
+                if(if_full_path)
+                    ret.emplace_back(pos->path().generic_string());
+                else
+                    ret.emplace_back(pos->path().filename().string());
+            }
+        }
+    }
+    return ret;
+}
+
+vector<string> Common::list_files(string path, bool if_full_path, bool if_child) {
+    vector<string> ret;
+    namespace fs = boost::filesystem;
+    if(if_child){
+        fs::recursive_directory_iterator end;
+        for(fs::recursive_directory_iterator pos(path); pos != end; ++pos){
+            if(fs::is_regular_file(*pos)){
+                if(if_full_path)
+                    ret.emplace_back(pos->path().generic_string());
+                else
+                    ret.emplace_back(pos->path().filename().string());
+            }
+        }
+    }else {
+        fs::directory_iterator end;
+        for (fs::directory_iterator pos(path); pos != end; ++pos) {
+            if (fs::is_regular_file(*pos)) {
+                if(if_full_path)
+                    ret.emplace_back(pos->path().generic_string());
+                else
+                    ret.emplace_back(pos->path().filename().string());
+            }
+        }
+    }
+    return ret;
+}
+
 void STLEx::print_vector(vector<string> v) {
     if(v.size()>0)
         for(int i=0;i<int(v.size());i++)
             cout << v[i] << endl;
     else
-        cout << "none";
-    cout << endl;
+        cout << "none" << endl;
 }
 
 vector<string> STLEx::vectors_set_union(vector<string> v1, vector<string> v2) {

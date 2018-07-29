@@ -13,6 +13,7 @@
 #include "boost/format.hpp"
 #include "boost/program_options.hpp"
 #include "boost/unordered_map.hpp"
+#include "boost/filesystem.hpp"
 #include <streambuf>
 #include <sys/types.h>
 #include <sys/stat.h>
