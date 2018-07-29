@@ -4,7 +4,6 @@
 
 #include "Common.h"
 #include <fstream>
-#include <utility>
 
 
 int Common::write(string file_path, string str, bool append) {
@@ -42,13 +41,16 @@ string Common::trim(string src_str) {
     return boost::trim_copy(src_str);
 }
 
-vector<string> Common::regex_rows(string src_str, string reg_str) {
+vector<string> Common::regex_rows(string src_str, string reg_str, bool if_trim) {
     vector<string> ret;
     boost::regex reg(reg_str);
     boost::sregex_iterator pos(src_str.begin(), src_str.end(), reg, boost::match_not_dot_newline);
     boost::sregex_iterator end;
     while(pos != end){
-        ret.emplace_back((*pos)[0]);
+        if(if_trim)
+            ret.emplace_back(Common::trim((*pos)[0]));
+        else
+            ret.emplace_back((*pos)[0]);
         ++pos;
     }
     return ret;
@@ -129,6 +131,98 @@ string Common::get_current_dir() {
     }
     now_dir = s_now_dir;
     return now_dir;
+}
+
+map<string, DataType> Common::parse_cpu_info() {
+    int tt;
+    set<string> str_set;
+    DataType data;
+    map<string, DataType> cpu_info_map;
+    string cpu_info = Common::read("/proc/cpuinfo", tt);
+    vector<string> processors = Common::regex_rows_column(cpu_info, ".*processor.+", 1, ":");
+    data.set_int(static_cast<int>(processors.size()));
+    cpu_info_map.insert(pair<string, DataType>("thread_num", data));
+    data.clear();
+    vector<string> physicals = Common::regex_rows_column_uniq(cpu_info, ".*physical id.+", 1, ":");
+    data.set_int(static_cast<int>(physicals.size()));
+    cpu_info_map.insert(pair<string, DataType>("cpu_count", data));
+    data.clear();
+    vector<string> cpu_model = Common::regex_rows_column_uniq(cpu_info, ".*model name.+", 1, ":");
+    if(cpu_model.size() == 1){
+        data.set_str(cpu_model[0]);
+        cpu_info_map.insert(pair<string, DataType>("cpu_model", data));
+        data.clear();
+    } else{
+        perror("cpu model error: have more than one cpu model!");
+        STLEx::print_vector(cpu_model);
+    }
+    vector<string> cpu_stepping = Common::regex_rows_column_uniq(cpu_info, ".*stepping.+", 1, ":");
+    if(cpu_stepping.size() == 1){
+        data.set_str(cpu_stepping[0]);
+        cpu_info_map.insert(pair<string, DataType>("cpu_stepping", data));
+        data.clear();
+    } else{
+        perror("cpu stepping error!");
+    }
+    stringstream cpu_socket_num; int cpu_socket_n;
+    cpu_socket_num << Command::shell_exec("dmidecode -t4|grep Socket.Designation:|wc -l", tt);
+    if(cpu_socket_num.str().length() > 0)
+        cpu_socket_num >> cpu_socket_n;
+    else
+        cpu_socket_n = 0;
+    data.set_int(cpu_socket_n);
+    cpu_info_map.insert(pair<string, DataType>("cpu_socket_count", data));
+    data.clear();
+
+    return cpu_info_map;
+}
+
+vector<string> Common::regex_rows_uniq(string src_str, string reg_str, bool if_trim) {
+    vector<string> tmp = Common::regex_rows(std::move(src_str), std::move(reg_str), if_trim);
+    STLEx::vector_uniq(tmp);
+    return tmp;
+}
+
+void STLEx::vector_uniq(vector<string> &v) {
+    vector<string>::iterator vector_iterator;
+    sort(v.begin(),v.end());
+    vector_iterator = unique(v.begin(),v.end());
+    if(vector_iterator != v.end()){
+        v.erase(vector_iterator,v.end());
+    }
+}
+
+vector<string>
+Common::regex_rows_column_uniq(string src_str, string reg_str, int column, string reg_split, bool if_trim) {
+    vector<string> tmp = Common::regex_rows_column(std::move(src_str), std::move(reg_str), column, std::move(reg_split), if_trim);
+    STLEx::vector_uniq(tmp);
+    return tmp;
+}
+
+void STLEx::print_vector(vector<string> v) {
+    if(v.size()>0)
+        for(int i=0;i<int(v.size());i++)
+            cout << v[i] << endl;
+    else
+        cout << "none";
+    cout << endl;
+}
+
+vector<string> STLEx::vectors_set_union(vector<string> v1, vector<string> v2) {
+    vector<string> v;
+    sort(v1.begin(), v1.end());
+    sort(v2.begin(), v2.end());
+    set_union(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(v));
+    return v;
+}
+
+long STLEx::vector_find(vector<string> v, string element) {
+    vector<string>::iterator it;
+    it = find(v.begin(), v.end(), element);
+    if(it == v.end())
+        return -1;
+    else
+        return std::distance(std::begin(v), it);
 }
 
 

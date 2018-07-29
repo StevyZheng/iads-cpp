@@ -98,6 +98,7 @@ string SystemInfo::get_info() {
     int recode;
     string dmi_info, fru_info, bmc_summary;
     string cpu_info = Command::shell_exec("lscpu", recode);
+    map<string, DataType> map_cpu = Common::parse_cpu_info();
     dmi_info = Command::shell_exec("dmidecode 2>> /dev/null", recode);
     fru_info = Command::shell_exec(ipmicfg_path + " -fru list", recode);
     bmc_summary = Command::shell_exec(ipmicfg_path + " -summary", recode);
@@ -106,8 +107,16 @@ string SystemInfo::get_info() {
     try {
         this->os_ver = Common::split_string(os_info, ":").at(1);
         if(!cpu_info.empty()) {
-            this->cpu_model = Common::regex_rows_column(cpu_info, ".*Model name.+", 1, ":").at(0);
-            this->cpu_stepping = Common::regex_rows_column(cpu_info, ".*Stepping.+", 1, ":").at(0);
+            if(map_cpu.count("cpu_model") > 0)
+                this->cpu_model = map_cpu["cpu_model"].get_str();
+            if(map_cpu.count("cpu_stepping") > 0)
+                this->cpu_stepping = map_cpu["cpu_stepping"].get_str();
+            if(map_cpu.count("cpu_count") > 0)
+                this->cpu_count = map_cpu["cpu_count"].get_int();
+            if(map_cpu.count("cpu_socket_count") > 0)
+                this->cpu_socket_count = map_cpu["cpu_socket_count"].get_int();
+            //this->cpu_model = Common::regex_rows_column(cpu_info, ".*Model name.+", 1, ":").at(0);
+            //this->cpu_stepping = Common::regex_rows_column(cpu_info, ".*Stepping.+", 1, ":").at(0);
         }
         if(!dmi_info.empty()) {
             this->bios_vender = Common::regex_rows_column(dmi_info, ".*Vendor.+", 1, ":").at(0);
