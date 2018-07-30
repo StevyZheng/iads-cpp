@@ -12,10 +12,13 @@ int main(int argc, char* argv[]) {
 
     SystemInfo si;
     si.get_info();
-    cout << si.to_json();*/
+    cout << si.to_table();*/
 
     Phy phy;
-    cout << phy.err_phys_to_table();
+    cout << phy.phys_to_table();
 
+
+    //func();
     return 0;
 }
+

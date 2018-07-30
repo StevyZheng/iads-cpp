@@ -190,7 +190,18 @@ vector<string> SystemInfo::get_attr_value() {
 }
 
 string SystemInfo::to_table() {
-    ConsoleTable sysinfo_table(2);
+    FormatTable table;
+    vector<string> header = {"Attribute", "Value"};
+    table.add_header(header);
+    vector<string> attr_value = this->get_attr_value();
+    for(int i=0; i < this->attr_vector.size(); i++){
+        table.add_row({this->attr_vector[i], attr_value[i]});
+    }
+    table.set_align(SAlign::CENTER);
+    table.create_mem_table();
+    return table.get_table_str();
+
+    /*ConsoleTable sysinfo_table(2);
     auto *buf = new ostringstream;
     Row header = {"**Attribute**", "**Value**"};
     sysinfo_table.AddNewRow(header);
@@ -199,6 +210,6 @@ string SystemInfo::to_table() {
         sysinfo_table.AddNewRow({this->attr_vector[i], attr_value[i]});
     }
     sysinfo_table.WriteTable(Align::Center, buf);
-    return buf->str();
+    return buf->str();*/
 }
 

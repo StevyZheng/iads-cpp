@@ -364,3 +364,82 @@ void IoDemo::create_multi_files(string file_path, int multi_num, long file_size)
         }
     }
 }
+
+void FormatTable::add_header(vector<string> header) {
+    if(header.empty()){
+        perror("header size <= 0!");
+        throw runtime_error("header size <= 0!");
+        return;
+    }
+    this->header = header;
+    this->column_count = static_cast<int>(header.size());
+    this->table_map.insert(pair<int, vector<string>>(0, header));
+}
+
+void FormatTable::add_row(vector<string> row) {
+    if(row.size() <= this->header.size())
+        this->table_map.insert(pair<int, vector<string>>(++(this->i_table), row));
+    else{
+        perror("row size > header size!");
+        throw runtime_error("row size > header size!");
+        return;
+    }
+}
+
+void FormatTable::create_mem_table() {
+    if(this->header.empty() || this->table_map.empty()){
+        perror("create table error: header or table_map is empty!");
+        throw runtime_error("create table error: header or table_map is empty!");
+    }
+
+    tf::CellFormatter* p_column[this->column_count];
+    int max_size[this->column_count];
+    for(int x=0; x<this->column_count; x++)
+        max_size[x] = 0;
+    for(auto it: this->table_map){
+        for(int j=0; j < this->column_count; j++){
+            if(it.second[j].length() > max_size[j]){
+                max_size[j] = static_cast<int>(it.second[j].length());
+            }
+        }
+    }
+
+    for(int i=0; i < this->column_count; i++){
+        p_column[i] = new tf::CellFormatter(static_cast<size_t>(max_size[i]));
+        if(this->align == SAlign::CENTER)
+            p_column[i]->horizontalAlignment = tf::HORIZONTAL::CENTER;
+        else if(this->align == SAlign::LEFT)
+            p_column[i]->horizontalAlignment = tf::HORIZONTAL::LEFT;
+        else
+            p_column[i]->horizontalAlignment = tf::HORIZONTAL::RIGHT;
+        p_column[i]->verticalAlignment = tf::VERTICAL::MIDDLE;
+    }
+    tf::CellFormatterVector cell_vector;
+    for(int x=0; x<this->column_count; x++)
+        cell_vector.emplace_back(*(p_column[x]));
+    tf::TableFormatter formatter(cell_vector);
+
+    //fill table
+    formatter.addHorizontalLine( '-' );
+    for(auto i: this->table_map){
+        int key = i.first;
+        vector<string> value_arr = i.second;
+        for(auto str: value_arr)
+            formatter << str;
+        if(key == 0)
+            formatter.addHorizontalLine('=');
+        else
+            formatter.addHorizontalLine( '-' );
+    }
+    this->table_str = formatter.toString();
+    for(int i=0; i < this->column_count; i++)
+        delete p_column[i];
+}
+
+void FormatTable::set_align(SAlign t_align) {
+    this->align  = t_align;
+}
+
+string FormatTable::get_table_str() {
+    return this->table_str;
+}

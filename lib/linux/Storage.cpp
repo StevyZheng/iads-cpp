@@ -60,7 +60,38 @@ vector<Phy> Phy::scan_phys() {
 }
 
 string Phy::phys_to_table() {
-    ConsoleTable sysinfo_table(6);
+    FormatTable table;
+    vector<string> header = {"phy_name", "invalid_dword_count", "loss_of_dword_sync_count", "phy_reset_problem_count",\
+                    "running_disparity_error_count", "sas_addr"};
+    table.add_header(header);
+    vector<Phy> phys = Phy::scan_phys();
+    stringstream buf_c;
+    string ti, tl, tp, tr;
+    long long til, tll, tpl, trl;
+    for(auto i: phys){
+        til = i.get_err_attr(PhyCount::invalid_dword_count);
+        buf_c << til;
+        buf_c >> ti;
+        Common::stringstream_clear(buf_c);
+        tll = i.get_err_attr(PhyCount::loss_of_dword_sync_count);
+        buf_c << tll;
+        buf_c >> tl;
+        Common::stringstream_clear(buf_c);
+        tpl = i.get_err_attr(PhyCount::phy_reset_problem_count);
+        buf_c << tpl;
+        buf_c >> tp;
+        Common::stringstream_clear(buf_c);
+        trl = i.get_err_attr(PhyCount::running_disparity_error_count);
+        buf_c << trl;
+        buf_c >> tr;
+        table.add_row({i.get_phy_name(), ti, tl, tp, tr, i.get_sas_addr()});
+    }
+    table.set_align(SAlign::CENTER);
+    table.create_mem_table();
+    return table.get_table_str();
+
+
+    /*ConsoleTable sysinfo_table(6);
     auto *buf = new ostringstream;
     Row header = {"phy_name", "invalid_dword_count", "loss_of_dword_sync_count", "phy_reset_problem_count",\
                     "running_disparity_error_count", "sas_addr"};
@@ -83,15 +114,14 @@ string Phy::phys_to_table() {
         sysinfo_table.AddNewRow({i.get_phy_name(), ti, tl, tp, tr, i.get_sas_addr()});
     }
     sysinfo_table.WriteTable(Align::Center, buf);
-    return buf->str();
+    return buf->str();*/
 }
 
 string Phy::err_phys_to_table() {
-    ConsoleTable sysinfo_table(6);
-    auto *buf = new ostringstream;
-    Row header = {"phy_name", "invalid_dword_count", "loss_of_dword_sync_count", "phy_reset_problem_count",\
+    FormatTable table;
+    vector<string> header = {"phy_name", "invalid_dword_count", "loss_of_dword_sync_count", "phy_reset_problem_count",\
                     "running_disparity_error_count", "sas_addr"};
-    sysinfo_table.AddNewRow(header);
+    table.add_header(header);
     vector<Phy> phys = Phy::scan_phys();
     stringstream buf_c;
     string ti, tl, tp, tr;
@@ -113,8 +143,9 @@ string Phy::err_phys_to_table() {
         buf_c << trl;
         buf_c >> tr;
         if(til > 0 || tll > 0 || tpl > 0|| trl > 0)
-            sysinfo_table.AddNewRow({i.get_phy_name(), ti, tl, tp, tr, i.get_sas_addr()});
+            table.add_row({i.get_phy_name(), ti, tl, tp, tr, i.get_sas_addr()});
     }
-    sysinfo_table.WriteTable(Align::Center, buf);
-    return buf->str();
+    table.set_align(SAlign::CENTER);
+    table.create_mem_table();
+    return table.get_table_str();
 }

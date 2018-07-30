@@ -9,6 +9,8 @@
 #include <ctime>
 #include <utility>
 #include "Command.h"
+#include "../tableformatter.hpp"
+namespace tf = tableformatter;
 
 class DataType{
 public:
@@ -88,6 +90,37 @@ struct STLEx{
     static void print_vector(vector<string> v);
     static vector<string> vectors_set_union(vector<string> v1,vector<string> v2);
     static long vector_find(vector<string> v, string element);
+};
+
+enum SAlign{
+    LEFT,
+    CENTER,
+    RIGHT
+};
+
+class FormatTable{
+public:
+    explicit FormatTable(){
+        this->align = SAlign ::CENTER;
+        this->column_count = 0;
+        this->table_str = "";
+        this->i_table = 0;
+    }
+
+    void add_header(vector<string> header);
+    void add_row(vector<string> row);
+    void set_align(SAlign t_align);
+    void create_mem_table();
+    string get_table_str();
+
+private:
+    int column_count;
+    SAlign align;
+    vector<string> header;
+    vector<int> column_width;
+    string table_str;
+    map<int, vector<string>> table_map;
+    int i_table;
 };
 
 
