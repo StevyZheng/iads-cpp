@@ -14,6 +14,8 @@
 #include "boost/program_options.hpp"
 #include "boost/unordered_map.hpp"
 #include "boost/filesystem.hpp"
+#include "boost/date_time/gregorian/gregorian.hpp"
+#include "boost/date_time/posix_time/posix_time.hpp"
 #include <streambuf>
 #include <sys/types.h>
 #include <sys/stat.h>

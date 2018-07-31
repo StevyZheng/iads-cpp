@@ -213,3 +213,41 @@ string SystemInfo::to_table() {
     return buf->str();*/
 }
 
+void SysLog::add_err_reg(vector<string> errs) {
+    for(auto elem: errs)
+        this->reg_err_arr.emplace_back(elem);
+}
+
+void SysLog::parse_log() {
+    if(this->reg_err_arr.empty()){
+        perror("SysLog::parse_log::reg_err_arr.size < 1!");
+        throw runtime_error("SysLog::parse_log::reg_err_arr.size < 1!");
+    }
+    int recode;
+    string regx = ".*(";
+    int i = 0;
+    for(; i<this->reg_err_arr.size()-1; i++){
+        regx = regx + this->reg_err_arr[i] + "|";
+    }
+    regx = regx + this->reg_err_arr[i] + ").*";
+    string log_str = Common::read(this->log_file, recode);
+    this->err_msg = Common::regex_rows_uniq(log_str, regx);
+}
+
+string SysLog::get_err_msg_str() {
+    stringstream buf;
+    for(auto elem: this->err_msg)
+        buf << elem << endl;
+    return buf.str();
+}
+
+string SysLog::get_err_msg_table() {
+    FormatTable table;
+    table.add_header({"error log:"});
+    for(auto elem: this->err_msg)
+        table.add_row({elem});
+    table.set_align(SAlign::LEFT);
+    table.set_max_width(100);
+    table.create_mem_table();
+    return table.get_table_str();
+}

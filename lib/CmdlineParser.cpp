@@ -36,6 +36,12 @@ void CmdlineParser::doing() {
     if(this->pVm->count("phyerror")){
         cout << Phy::err_phys_to_table();
     }
+    if(this->pVm->count("logerror")){
+        SysLog sl;
+        sl.parse_log();
+        cout << sl.get_err_msg_table();
+    }
+
     if(this->pVm->empty()){
         //cout << "no options." << endl;
         cout << *(this->pOpts) << endl;

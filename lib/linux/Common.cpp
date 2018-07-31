@@ -393,7 +393,7 @@ void FormatTable::create_mem_table() {
     }
 
     tf::CellFormatter* p_column[this->column_count];
-    int max_size[this->column_count];
+    long max_size[this->column_count];
     for(int x=0; x<this->column_count; x++)
         max_size[x] = 0;
     for(auto it: this->table_map){
@@ -405,7 +405,10 @@ void FormatTable::create_mem_table() {
     }
 
     for(int i=0; i < this->column_count; i++){
-        p_column[i] = new tf::CellFormatter(static_cast<size_t>(max_size[i]));
+        if(this->max_width > 0 && this->max_width < max_size[i])
+            p_column[i] = new tf::CellFormatter(static_cast<size_t>(this->max_width));
+        else
+            p_column[i] = new tf::CellFormatter(static_cast<size_t>(max_size[i]));
         if(this->align == SAlign::CENTER)
             p_column[i]->horizontalAlignment = tf::HORIZONTAL::CENTER;
         else if(this->align == SAlign::LEFT)

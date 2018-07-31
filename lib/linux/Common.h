@@ -12,6 +12,7 @@
 #include "../tableformatter.hpp"
 namespace tf = tableformatter;
 
+
 class DataType{
 public:
     DataType(){
@@ -105,11 +106,13 @@ public:
         this->column_count = 0;
         this->table_str = "";
         this->i_table = 0;
+        this->max_width = -1;
     }
 
     void add_header(vector<string> header);
     void add_row(vector<string> row);
     void set_align(SAlign t_align);
+    void set_max_width(int mw){ if(mw > 0) this->max_width = mw; }
     void create_mem_table();
     string get_table_str();
 
@@ -117,7 +120,7 @@ private:
     int column_count;
     SAlign align;
     vector<string> header;
-    vector<int> column_width;
+    int max_width;
     string table_str;
     map<int, vector<string>> table_map;
     int i_table;

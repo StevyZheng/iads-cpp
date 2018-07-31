@@ -17,9 +17,10 @@ public:
         this->pVm = new variables_map();
         this->pOpts->add_options()
                 ("help,h", "iads help info.")
-                ("sysinfo", value<string>()->implicit_value("\"table\""),"system info, add param: table, str or json.")
+                ("sysinfo", value<string>()->implicit_value("table"),"system info, add param: table, str or json.")
                 ("mkdir", value<vector<string>>()->multitoken(), "multi create dirs, param: path count.")
-                ("phyerror", "print phy error table.");
+                ("phyerror", "print phy error table.")
+                ("logerror", "print log error table.");
     }
     ~CmdlineParser(){
         delete this->pOpts;

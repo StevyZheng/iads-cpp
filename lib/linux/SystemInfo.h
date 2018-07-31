@@ -5,6 +5,8 @@
 #ifndef IADS_COMMONHW_H
 #define IADS_COMMONHW_H
 
+#include <utility>
+
 #include "Command.h"
 #include "Common.h"
 #include "../ConsoleTable.h"
@@ -47,9 +49,30 @@ struct SystemInfo {
     bool dmi_exeist;
 };
 
+namespace dt = boost::gregorian;
+namespace pt = boost::posix_time;
 class SysLog{
+public:
+    SysLog(){
+        this->log_file = "/var/log/messages";
+        this->init_reg_err_arr();
+    }
+
+    explicit SysLog(string file_path){
+        this->log_file = std::move(file_path);
+        this->init_reg_err_arr();
+    }
+    void set_log_file(string file){ this->log_file = std::move(file); }
+    void add_err_reg(vector<string> errs);
+    void parse_log();
+    vector<string> get_err_msg(){ return this->reg_err_arr; }
+    string get_err_msg_str();
+    string get_err_msg_table();
 private:
     vector<string> err_msg;
+    vector<string> reg_err_arr;
+    string log_file;
+    void init_reg_err_arr(){ this->reg_err_arr = {"error", "failed", "ecc", "Call Trace"}; }
 };
 
 

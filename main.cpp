@@ -18,11 +18,11 @@ int main(int argc, char* argv[]) {
     cout << si.to_table();
 
     Phy phy;
-    cout << phy.phys_to_table();*/
-    sqlite3 *db = NULL;
-    char *err_msg = NULL;
-    int rc = sqlite3_open("test.db", &db);
-    sqlite3_close(db);
+    cout << phy.phys_to_table();
+
+    SysLog sl;
+    sl.parse_log();
+    cout << sl.get_err_msg_str();*/
 
     return 0;
 }
