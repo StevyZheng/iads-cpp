@@ -6,6 +6,8 @@
 #define IADS_CMDLINEPARSER_H
 
 #include "linux/SystemInfo.h"
+#include "linux/Storage.h"
+
 using namespace boost::program_options;
 
 class CmdlineParser {
@@ -15,8 +17,9 @@ public:
         this->pVm = new variables_map();
         this->pOpts->add_options()
                 ("help,h", "iads help info.")
-                ("sysinfo", value<string>()->implicit_value("str"),"system info, add param: str or json.")
-                ("mkdir", value<vector<string>>()->multitoken(), "multi create dirs, param: path count.");
+                ("sysinfo", value<string>()->implicit_value("\"table\""),"system info, add param: table, str or json.")
+                ("mkdir", value<vector<string>>()->multitoken(), "multi create dirs, param: path count.")
+                ("phyerror", "print phy error table.");
     }
     ~CmdlineParser(){
         delete this->pOpts;

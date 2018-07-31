@@ -47,5 +47,10 @@ struct SystemInfo {
     bool dmi_exeist;
 };
 
+class SysLog{
+private:
+    vector<string> err_msg;
+};
+
 
 #endif //IADS_COMMONHW_H

@@ -22,15 +22,23 @@ void CmdlineParser::doing() {
     }
     if(this->pVm->count("sysinfo")){
         SystemInfo si;
+        si.get_info();
         if("str" == this->pVm->at("sysinfo").as<string>())
             cout << si.to_string();
+        else if("table" == this->pVm->at("sysinfo").as<string>())
+            cout << si.to_table();
         else if("json" == this->pVm->at("sysinfo").as<string>())
             cout << si.to_json() << endl;
     }
     if(this->pVm->count("mkdir")){
         IoDemo::create_multi_dirs(this->pVm->at("mkdir").as<vector<string>>()[0], atoi(this->pVm->at("mkdir").as<vector<string>>()[1].c_str()));
     }
+    if(this->pVm->count("phyerror")){
+        cout << Phy::err_phys_to_table();
+    }
     if(this->pVm->empty()){
-        cout << "no options." << endl;
+        //cout << "no options." << endl;
+        cout << *(this->pOpts) << endl;
+        return;
     }
 }
