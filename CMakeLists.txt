@@ -3,7 +3,7 @@ project(iads)
 
 set(CMAKE_CXX_STANDARD 11)
 set(BOOST_ROOT "/usr/local/include/boost")
-INCLUDE_DIRECTORIES(/usr/local/include/boost /usr/local/include/sqlcipher)
+INCLUDE_DIRECTORIES(/usr/local/include/boost /usr/local/include/sqlcipher lib/eigen3.3.5)
 set(Boost_USE_STATIC_LIBS ON)
 # link_directories(/usr/lib)
 find_package(Boost 1.66.0 COMPONENTS log date_time thread filesystem system program_options regex REQUIRED)

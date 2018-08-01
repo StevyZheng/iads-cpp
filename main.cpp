@@ -5,13 +5,20 @@ extern "C" {
 #include "lib/database/sqlcipher/sqlite3.h"
 }
 
+#include "Dense"
+
 using namespace std;
 
 
 int main(int argc, char* argv[]) {
-    CmdlineParser parser;
+    using Eigen::MatrixXd;
+    MatrixXd m = MatrixXd::Random(10000,10000);
+    while(true)
+        m * m;
+
+    /*CmdlineParser parser;
     parser.parse(argc, argv);
-    parser.doing();
+    parser.doing();*/
 
     /*SystemInfo si;
     si.get_info();
