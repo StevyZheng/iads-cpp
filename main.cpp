@@ -11,14 +11,10 @@ using namespace std;
 
 
 int main(int argc, char* argv[]) {
-    using Eigen::MatrixXd;
-    MatrixXd m = MatrixXd::Random(10000,10000);
-    while(true)
-        m * m;
 
-    /*CmdlineParser parser;
+    CmdlineParser parser;
     parser.parse(argc, argv);
-    parser.doing();*/
+    parser.doing();
 
     /*SystemInfo si;
     si.get_info();

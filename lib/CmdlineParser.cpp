@@ -41,6 +41,9 @@ void CmdlineParser::doing() {
         sl.parse_log();
         cout << sl.get_err_msg_table();
     }
+    if(this->pVm->count("burn")){
+        BurnInTest::burn_cpu_mem();
+    }
 
     if(this->pVm->empty()){
         //cout << "no options." << endl;

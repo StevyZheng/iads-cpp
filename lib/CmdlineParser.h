@@ -7,6 +7,7 @@
 
 #include "linux/SystemInfo.h"
 #include "linux/Storage.h"
+#include "burn/BurnInTest.h"
 
 using namespace boost::program_options;
 
@@ -20,7 +21,8 @@ public:
                 ("sysinfo", value<string>()->implicit_value("table"),"system info, add param: table, str or json.")
                 ("mkdir", value<vector<string>>()->multitoken(), "multi create dirs, param: path count.")
                 ("phyerror", "print phy error table.")
-                ("logerror", "print log error table.");
+                ("logerror", "print log error table.")
+                ("burn", "burn in test, 90% memory, all cpus.");
     }
     ~CmdlineParser(){
         delete this->pOpts;
