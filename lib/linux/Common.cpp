@@ -253,6 +253,11 @@ vector<string> Common::list_files(string path, bool if_full_path, bool if_child)
     return ret;
 }
 
+void Common::check() {
+    int recode;
+    string dmi_str = Command::shell_exec("dmidecode", recode);
+}
+
 void STLEx::print_vector(vector<string> v) {
     if(v.size()>0)
         for(int i=0;i<int(v.size());i++)

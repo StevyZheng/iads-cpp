@@ -84,6 +84,8 @@ struct Common {
     static vector<string> list_files(string path, bool if_full_path= false, bool if_child= false);
 
     static map<string, DataType> parse_cpu_info();
+
+    static void check();
 };
 
 struct STLEx{
