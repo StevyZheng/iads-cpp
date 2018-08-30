@@ -25,13 +25,24 @@ void BurnInTest::burn_cpu_mem() {
                 m * m;
         });
     }
+
     for(int i=0; i<mem_pro_count; i++){
         tp.enqueue([every_mem_size] {
-            auto * p = new char[every_mem_size];
-            for (char *q = p; q != nullptr; q++){
-               *q = 0;
-               *q = 'a';
+            while(1) {
+                int recode;
+                Command::shell_exec("./memtester 1G", recode);
             }
         });
     }
+}
+
+void BurnInTest::mem_badblock() {
+    long long every_mem_size = 1024 * 1024 * 1024;
+    long long mem_init_size = SystemInfo::get_avail_mem_size();
+    long long mem_size = static_cast<long long int>(mem_init_size - 500*1024*1024);
+    int g_mem_size = static_cast<int>(mem_size / 1024 / 1024 / 1024);
+    stringstream tmp;
+    tmp << g_mem_size;
+    string str = "./memtester " + tmp.str() + "G ";
+    system(str.c_str());
 }

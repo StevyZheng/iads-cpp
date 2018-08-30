@@ -22,7 +22,10 @@ public:
                 ("mkdir", value<vector<string>>()->multitoken(), "multi create dirs, param: path count.")
                 ("phyerror", "print phy error table.")
                 ("logerror", "print log error table.")
-                ("burn", "burn in test, 90% memory, all cpus.");
+                ("burn", "burn in test, 80% memory, all cpus.")
+                ("membadblock", "check memory badblock.")
+                ("netconf", value<vector<string>>()->multitoken(), "configure net, iads --netconf <rule> <ip> <netmask> <gateway> <dns>, like: "
+                        "iads --netconf dhcp or iads --netconf static 192.168.100.5 255.255.255.0 192.168.100.1 8.8.8.8");
     }
     ~CmdlineParser(){
         delete this->pOpts;

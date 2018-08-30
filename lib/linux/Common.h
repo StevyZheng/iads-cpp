@@ -127,12 +127,6 @@ private:
 };
 
 
-class Net{
-private:
-    string conf_path;
-    vector<string> ports;
-};
-
 class IoDemo{
 public:
     static void create_multi_dirs(string file_path, int multi_num);

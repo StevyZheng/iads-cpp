@@ -12,6 +12,7 @@
 class BurnInTest {
 public:
     static void burn_cpu_mem();
+    static void mem_badblock();
 };
 
 

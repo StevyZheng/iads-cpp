@@ -44,6 +44,9 @@ void CmdlineParser::doing() {
     if(this->pVm->count("burn")){
         BurnInTest::burn_cpu_mem();
     }
+    if(this->pVm->count("membadblock")){
+        BurnInTest::mem_badblock();
+    }
 
     if(this->pVm->empty()){
         //cout << "no options." << endl;
